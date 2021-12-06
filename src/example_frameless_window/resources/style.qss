@@ -7,9 +7,15 @@ QMainWindow {
     background-repeat: repeat-xy;
 }
 
-QMainWindow#undecoratedWindow {
+QMainWindow#linux {
     border-radius: 10px;
     border: solid 1px black;
+}
+
+QWidget#windows {
+    margin: 1px;
+    border-radius: 0;
+    border: solid 1px rgba(20,20,20,0.9);
 }
 
 QMenuBar {
@@ -512,12 +518,12 @@ QRadioButton::indicator:unchecked {
 
 QWidget#controlsContainerRight {
     background-color: rgba(20,20,20,0.9);
-    border-bottom-left-radius: 10px;
+    border-radius: 10px;
     border-top-right-radius: 9px;
 }
 QWidget#controlsContainerLeft {
     background-color: rgba(20,20,20,0.9);
-    border-bottom-right-radius: 10px;
+    border-radius: 10px;
     border-top-left-radius: 9px;
 }
 QToolButton#closeBtn {

@@ -1,5 +1,6 @@
 #include "UndecoratedWindow.h"
 #include "ui_undecoratedwindow.h"
+#include "QWinWidget.h"
 
 #include <QApplication>
 #include <QWindow>
@@ -9,12 +10,11 @@
 #include <QAbstractButton>
 #include <QDebug>
 
+#include "platform/NativeDefinitions.h"
+
 #ifdef Q_OS_DARWIN
 #include "platform/OSXHideTitleBar.h"
 #endif
-
-#define RESIZE_HANDLES_WIDTH 4
-#define MOVE_HANDLES_HEIGHT 28
 
 QString getStyleSheet() {
   QFile file(":resources/style.qss");
@@ -26,15 +26,24 @@ QString getStyleSheet() {
 void UndecoratedWindow::restoreWindowStates() {
   QSettings settings
       (QApplication::organizationName(), QApplication::applicationName(), this);
-  restoreGeometry(settings.value("geometry").toByteArray());
   restoreState(settings.value("window_state").toByteArray());
+  restoreGeometry(settings.value("geometry").toByteArray());
+#ifdef Q_OS_WINDOWS
+  setGeometry(settings.value("geometry_windows").toRect());
+#endif
+  qDebug() << "Restore" << this->geometry();
 }
 
 void UndecoratedWindow::storeWindowState() {
+  qDebug() << "Store" << this->win_widget->nativeGeometry();
+
   QSettings settings
       (QApplication::organizationName(), QApplication::applicationName(), this);
-  settings.setValue("geometry", saveGeometry());
   settings.setValue("window_state", saveState());
+  settings.setValue("geometry", saveGeometry());
+#ifdef Q_OS_WINDOWS
+  settings.setValue("geometry_windows", this->win_widget->nativeGeometry());
+#endif
 }
 
 UndecoratedWindow::UndecoratedWindow(QWidget *parent)
@@ -42,7 +51,13 @@ UndecoratedWindow::UndecoratedWindow(QWidget *parent)
   setAttribute(Qt::WA_TranslucentBackground, true);
   setAttribute(Qt::WA_NoSystemBackground, false);
 
-  this->restoreWindowStates();
+#ifdef Q_OS_UNIX
+  this->setObjectName("linux");
+#endif
+#ifdef Q_OS_WINDOWS
+  this->setObjectName("windows");
+#endif
+
   this->setMouseTracking(true);
   this->ui->setupUi(this);
   this->setStyleSheet(getStyleSheet());
@@ -55,13 +70,20 @@ UndecoratedWindow::UndecoratedWindow(QWidget *parent)
 #else
   this->setWindowFlag(Qt::FramelessWindowHint);
   this->setTitleBarDirection(Qt::LeftToRight);
-  this->setObjectName("undecoratedWindow");
 #endif
-  connect(this->ui->closeBtn, &QAbstractButton::pressed, this, &QMainWindow::close);
-  connect(this->ui->maximizeBtn, &QAbstractButton::pressed, [this](){
+  connect(this->ui->closeBtn, &QAbstractButton::clicked, this, &QMainWindow::close);
+
+#ifdef Q_OS_UNIX
+  connect(this->ui->maximizeBtn, &QAbstractButton::clicked, [this](){
     this->isMaximized() ? this->showNormal() :  this->showMaximized();
   });
-  connect(this->ui->minimizeBtn, &QAbstractButton::pressed, this, &QMainWindow::showMinimized);
+  connect(this->ui->minimizeBtn, &QAbstractButton::clicked, this, &QMainWindow::showMinimized);
+#endif
+  this->restoreWindowStates();
+#ifdef Q_OS_WINDOWS
+  win_widget = new QWinWidget(this);
+  win_widget->show();
+#endif
 }
 
 void UndecoratedWindow::closeEvent(QCloseEvent * /*event*/) {
@@ -69,9 +91,12 @@ void UndecoratedWindow::closeEvent(QCloseEvent * /*event*/) {
 }
 
 void UndecoratedWindow::showEvent(QShowEvent *event) {
-  QWidget::showEvent(event);
+  QMainWindow::showEvent(event);
 #ifdef Q_OS_DARWIN
   OSXHideTitleBar::Windowed(this->winId());
+#endif
+#ifdef Q_OS_WINDOWS
+  win_widget->updateMinimumAndMaximumSize();
 #endif
 }
 bool UndecoratedWindow::event(QEvent *event) {
@@ -90,6 +115,7 @@ bool UndecoratedWindow::event(QEvent *event) {
 #endif
     }
   } else if (event->type() == QEvent::HoverMove) {
+#ifdef Q_OS_UNIX
     auto *hover_event = dynamic_cast<QHoverEvent *>(event);
     QPoint position = hover_event->pos();
     if (position.x() > this->width() - RESIZE_HANDLES_WIDTH) {
@@ -137,6 +163,7 @@ bool UndecoratedWindow::event(QEvent *event) {
       qDebug() << "Top";
     }
     this->setCursor(Qt::ArrowCursor);
+#endif
   }
 //  qDebug() << event;
 

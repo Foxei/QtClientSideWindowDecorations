@@ -6,7 +6,7 @@
 namespace Ui {
 class UndecoratedWindow;
 }
-
+class QWinWidget;
 
 /**
  * Main class that communicates with all sub classes.
@@ -15,7 +15,9 @@ class UndecoratedWindow : public QMainWindow {
  Q_OBJECT
  private:
   Ui::UndecoratedWindow *ui; ///< Ui from .ui file
-
+#ifdef Q_OS_WINDOWS
+  QWinWidget* win_widget;
+#endif
   /**
    * Restores the window state form last usage.
    */
@@ -49,6 +51,10 @@ class UndecoratedWindow : public QMainWindow {
 
   void setTitleBarDirection(Qt::LayoutDirection direction);
   Qt::LayoutDirection titleBarDirection();
+
+#ifdef Q_OS_WINDOWS
+  friend QWinWidget;
+#endif
 };
 
 #endif // UNDECORATEDWINDOW_H_

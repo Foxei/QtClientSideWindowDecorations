@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
           this, &MainWindow::onUpdateVisibilityOfLeftSideNotch);
 
   this->ui->notch_left_check->setChecked(this->titleBarDirection() == Qt::RightToLeft);
+  this->onUpdateBackgroundImage();
 }
 
 void MainWindow::onUpdateBackgroundImage() {
