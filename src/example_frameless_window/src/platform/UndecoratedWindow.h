@@ -48,6 +48,7 @@ class UndecoratedWindow : public QMainWindow {
  public slots:
 
   void setTitleBarDirection(Qt::LayoutDirection direction);
+  Qt::LayoutDirection titleBarDirection();
 };
 
 #endif // UNDECORATEDWINDOW_H_

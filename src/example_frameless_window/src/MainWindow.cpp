@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(this->ui->notch_left_check, &QCheckBox::stateChanged,
           this, &MainWindow::onUpdateVisibilityOfLeftSideNotch);
 
-  this->onUpdateVisibilityOfLeftSideNotch();
+  this->ui->notch_left_check->setChecked(this->titleBarDirection() == Qt::RightToLeft);
 }
 
 void MainWindow::onUpdateBackgroundImage() {

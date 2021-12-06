@@ -14,7 +14,7 @@
 #endif
 
 #define RESIZE_HANDLES_WIDTH 4
-#define MOVE_HANDLES_HEIGHT 20
+#define MOVE_HANDLES_HEIGHT 28
 
 QString getStyleSheet() {
   QFile file(":resources/style.qss");
@@ -51,12 +51,17 @@ UndecoratedWindow::UndecoratedWindow(QWidget *parent)
   this->ui->closeBtn->hide();
   this->ui->minimizeBtn->hide();
   this->ui->maximizeBtn->hide();
+  setTitleBarDirection(Qt::RightToLeft);
 #else
-  setWindowFlag(Qt::FramelessWindowHint);
+  this->setWindowFlag(Qt::FramelessWindowHint);
+  this->setTitleBarDirection(Qt::LeftToRight);
+  this->setObjectName("undecoratedWindow");
 #endif
   connect(this->ui->closeBtn, &QAbstractButton::pressed, this, &QMainWindow::close);
+  connect(this->ui->maximizeBtn, &QAbstractButton::pressed, [this](){
+    this->isMaximized() ? this->showNormal() :  this->showMaximized();
+  });
   connect(this->ui->minimizeBtn, &QAbstractButton::pressed, this, &QMainWindow::showMinimized);
-  connect(this->ui->maximizeBtn, &QAbstractButton::pressed, this, &QMainWindow::showMaximized);
 }
 
 void UndecoratedWindow::closeEvent(QCloseEvent * /*event*/) {
@@ -147,4 +152,8 @@ void UndecoratedWindow::setTitleBarDirection(Qt::LayoutDirection direction) {
     this->ui->controlsContainerRight->setObjectName("controlsContainerLeft");
   }
   this->style()->polish(this->ui->controlsContainerRight);
+}
+
+Qt::LayoutDirection UndecoratedWindow::titleBarDirection(){
+    return this->ui->titleBarContainer->layoutDirection();
 }
