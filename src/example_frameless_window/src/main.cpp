@@ -23,14 +23,6 @@ void load_application_information()
         QString::number(MAJOR_VERSION) + "." + QString::number(MINOR_VERSION) + "." + QString::number(REVISION)));
 }
 
-QString getStyleSheet()
-{
-    QFile file(":resources/style.qss");
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    return styleSheet;
-}
-
 int main(int argc, char *argv[])
 {
     qInfo("[ExampleApplication] Executing %s, version %i.%i.%i", APPLICATION_NAME, MAJOR_VERSION, MINOR_VERSION, REVISION);
@@ -47,7 +39,6 @@ int main(int argc, char *argv[])
     qInfo("[ExampleApplication] Executing Gui.");
     auto *mainWindow = new MainWindow;
     mainWindow->setWindowTitle(QApplication::applicationName());
-    mainWindow->setStyleSheet(getStyleSheet());
     mainWindow->show();
 
     return QCoreApplication::exec();

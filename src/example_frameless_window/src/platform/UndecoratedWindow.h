@@ -3,11 +3,18 @@
 
 #include <QMainWindow>
 
+namespace Ui {
+class UndecoratedWindow;
+}
+
+
 /**
  * Main class that communicates with all sub classes.
  */
 class UndecoratedWindow : public QMainWindow {
  Q_OBJECT
+ private:
+  Ui::UndecoratedWindow *ui; ///< Ui from .ui file
 
   /**
    * Restores the window state form last usage.
@@ -37,6 +44,10 @@ class UndecoratedWindow : public QMainWindow {
   void showEvent(QShowEvent* event) override;
 
   bool event(QEvent* event) override;
+
+ public slots:
+
+  void setTitleBarDirection(Qt::LayoutDirection direction);
 };
 
 #endif // UNDECORATEDWINDOW_H_

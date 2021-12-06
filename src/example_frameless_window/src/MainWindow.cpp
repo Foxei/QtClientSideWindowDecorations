@@ -56,10 +56,13 @@ MainWindow::MainWindow(QWidget *parent)
   this->background_to_accent_map_.insert(7, ColorDefinitions::ORANGE);
 
   this->ui->setupUi(this);
+  this->centralWidget()->layout()->addWidget(this->ui->centralwidget);
   connect(this->ui->background_image_list, &QListWidget::itemSelectionChanged,
           this, &MainWindow::onUpdateBackgroundImage);
   connect(this->ui->notch_left_check, &QCheckBox::stateChanged,
           this, &MainWindow::onUpdateVisibilityOfLeftSideNotch);
+
+  this->onUpdateVisibilityOfLeftSideNotch();
 }
 
 void MainWindow::onUpdateBackgroundImage() {
@@ -76,15 +79,15 @@ void MainWindow::onUpdateBackgroundImage() {
 }
 
 void MainWindow::onUpdateVisibilityOfLeftSideNotch() {
-  bool show = this->ui->notch_left_check->isChecked();
-  this->ui->notch->setVisible(show);
-  qInfo("[MainWindow] Toggling left side control notch");
+  bool checked = this->ui->notch_left_check->isChecked();
+  this->setTitleBarDirection(checked?Qt::RightToLeft:Qt::LeftToRight);
+  qInfo("[MainWindow] Toggling control notch");
 }
 
 bool MainWindow::event(QEvent *event) {
   UndecoratedWindow::event(event);
   if (event->type() == QEvent::WindowStateChange) {
-    this->ui->notch_left_check->setChecked(this->windowState() != Qt::WindowState::WindowFullScreen);
+//    this->ui->notch_left_check->setChecked(this->windowState() != Qt::WindowState::WindowFullScreen);
   }
   return false;
 }

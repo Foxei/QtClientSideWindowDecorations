@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <widget class="QWidget" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,6 +14,14 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1020</width>
+     <height>742</height>
+    </rect>
+   </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
@@ -34,31 +42,6 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QLabel" name="notch">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>100</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="../resources/resources.qrc">:/resources/notch.svg</pixmap>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
      <widget class="QWidget" name="container" native="true">
       <layout class="QGridLayout" name="gridLayout">
        <property name="spacing">
@@ -193,14 +176,14 @@
           <item row="2" column="0">
            <widget class="QLabel" name="notch_left_lbl">
             <property name="text">
-             <string>Notch Left:</string>
+             <string>Controls Left:</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QCheckBox" name="notch_left_check">
             <property name="text">
-             <string>Show Control Notch on Left Side</string>
+             <string>Show Control on Left Side</string>
             </property>
             <property name="checked">
              <bool>true</bool>
