@@ -1,6 +1,5 @@
 #include "UndecoratedWindow.h"
 #include "ui_undecoratedwindow.h"
-#include "QWinWidget.h"
 
 #include <QApplication>
 #include <QWindow>
@@ -14,6 +13,9 @@
 
 #ifdef Q_OS_DARWIN
 #include "platform/OSXHideTitleBar.h"
+#endif
+#ifdef Q_OS_WINDOWS
+#include "QWinWidget.h"
 #endif
 
 QString getStyleSheet() {
@@ -35,8 +37,9 @@ void UndecoratedWindow::restoreWindowStates() {
 }
 
 void UndecoratedWindow::storeWindowState() {
+#ifdef Q_OS_WINDOWS
   qDebug() << "Store" << this->win_widget->nativeGeometry();
-
+#endif
   QSettings settings
       (QApplication::organizationName(), QApplication::applicationName(), this);
   settings.setValue("window_state", saveState());
