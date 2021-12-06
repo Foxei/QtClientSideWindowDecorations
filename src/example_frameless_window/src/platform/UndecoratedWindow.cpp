@@ -10,7 +10,7 @@
 #include "platform/OSXHideTitleBar.h"
 #endif
 
-#define RESIZE_HANDLES_WIDTH 10
+#define RESIZE_HANDLES_WIDTH 4
 #define MOVE_HANDLES_HEIGHT 20
 
 void UndecoratedWindow::restoreWindowStates() {
@@ -61,7 +61,6 @@ bool UndecoratedWindow::event(QEvent *event) {
   } else if (event->type() == QEvent::HoverMove) {
     auto *hover_event = dynamic_cast<QHoverEvent *>(event);
     QPoint position = hover_event->pos();
-    this->setCursor(Qt::ArrowCursor);
     if (position.x() > this->width() - RESIZE_HANDLES_WIDTH) {
       this->setCursor(Qt::SizeHorCursor);
       qDebug() << "Right";

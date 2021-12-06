@@ -25,13 +25,5 @@ find_package(Qt5 5.15 COMPONENTS Widgets Svg REQUIRED)
 message(STATUS "Qt5 Version: ${Qt5_VERSION}")
 message(STATUS "Qt5 Directory: ${Qt5_DIR}")
 
-# Include Eigen as an imported target
-find_package(Eigen3 REQUIRED NO_MODULE)
-message(STATUS "Eigen3 Version: ${EIGEN3_VERSION_STRING}")
-
-# Include Eigen as an imported target
-find_package(PugiXml REQUIRED NO_MODULE)
-message(STATUS "PugiXml Version: ${PugiXml_VERSION}")
-
 # Targets that we develop here
 add_subdirectory(src)
