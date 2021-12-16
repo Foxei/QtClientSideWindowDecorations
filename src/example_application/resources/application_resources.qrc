@@ -1,0 +1,20 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/resources">
+        <file>application_style.qss</file>
+        <file>logo.png</file>
+        <file>backgrounds/0.svg</file>
+        <file>backgrounds/1.svg</file>
+        <file>backgrounds/2.svg</file>
+        <file>backgrounds/3.svg</file>
+        <file>backgrounds/4.svg</file>
+        <file>backgrounds/5.svg</file>
+        <file>backgrounds/6.svg</file>
+        <file>backgrounds/7.svg</file>
+        <file>icons/chevron-up.svg</file>
+        <file>icons/chevron-up-disabled.svg</file>
+        <file>icons/chevron-up-pressed.svg</file>
+        <file>icons/chevron-down.svg</file>
+        <file>icons/chevron-down-disabled.svg</file>
+        <file>icons/chevron-down-pressed.svg</file>
+    </qresource>
+</RCC>

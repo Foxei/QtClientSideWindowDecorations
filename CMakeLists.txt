@@ -1,13 +1,13 @@
-# At LEAST 2.8 but newer is better
+# At LEAST 3.2 for use of imported targets
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(CpmDatasetConverter VERSION 0.1 LANGUAGES CXX)
-message("Converter Version: ${PROJECT_VERSION}")
+project(QtClientSideWindowDecoration VERSION 0.1 LANGUAGES CXX)
+message(STATUS "QtClientSideWindowDecoration Version: ${PROJECT_VERSION}")
 
 # Must use GNUInstallDirs to install libraries into correct
 # locations on all platforms.
 include(GNUInstallDirs)
 
-# Define C++14
+# Define C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -15,9 +15,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Make sure that for homebrew users qt5 is used instead of 6
 if (APPLE)
     list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt@5/")
-elseif (UNIX)
-#    find_package(PkgConfig REQUIRED)
-#    pkg_check_modules(GTK REQUIRED gtkmm-3.0)
 endif()
 
 # Include Qt5 as an imported target

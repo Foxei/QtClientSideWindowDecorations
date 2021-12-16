@@ -1,1 +1,2 @@
-add_subdirectory(example_frameless_window)
+add_subdirectory(client_side_window_decoration)
+add_subdirectory(example_application)

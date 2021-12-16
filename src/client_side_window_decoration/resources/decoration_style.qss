@@ -1,0 +1,15 @@
+/*#############################################################################
+#                              QMainWindow                                    #
+#############################################################################*/
+
+QMainWindow#linux {
+    margin: 1px;
+    border-radius: 10px;
+    border: solid 1px rgba(20,20,20,0.9);
+}
+
+QWidget#windows {
+    margin: 1px;
+    border-radius: 0;
+    border: solid 1px rgba(20,20,20,0.9);
+}

@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/resources">
+        <file>decoration_style.qss</file>
+        <file>icons/x.svg</file>
+        <file>icons/minus.svg</file>
+        <file>icons/maximize.svg</file>
+        <file>icons/minimize.svg</file>
+    </qresource>
+</RCC>
