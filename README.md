@@ -11,9 +11,9 @@ This repository contains an example of how ClientSide window decorations can be 
 
 ## Preview
 
-![MacOs Screenshot](/doc/images/MacOs.png)
-![Windows Screenshot](/doc/images/Windows.png)
-![Ubuntu Screenshot](/doc/images/Ubuntu.png)
+![MacOs Screenshot](/documentation/images/MacOs.png)
+![Windows Screenshot](/documentation/images/Windows.png)
+![Ubuntu Screenshot](/documentation/images/Ubuntu.png)
 
 ## Install Example
 

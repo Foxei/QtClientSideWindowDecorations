@@ -3,15 +3,20 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+# Make cmake to find own .ui file
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui/)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(FRAMEWORK_RES frameworks/logo.icns)
 
 # Define an executable
 add_executable(example_application
         resources/application_resources.qrc
         src/main.cpp
-        src/MainWindow.cpp)
+        src/MainWindow.cpp
+        ${FRAMEWORK_RES})
 
+# Set platform specific linker options
 if (APPLE)
     target_link_libraries(example_application Qt5::Widgets Qt5::Svg client_side_window_decoration)
 elseif (UNIX)
@@ -20,28 +25,25 @@ elseif (WIN32)
     target_link_libraries(example_application PRIVATE Qt5::Widgets Qt5::Svg client_side_window_decoration)
 endif ()
 
-target_include_directories(example_application PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-        PRIVATE src)
-
+# Setting platform specific post build options
 if (APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-framework ServiceManagement -framework Foundation -framework Cocoa")
     # Setting application meta information
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE TRUE)
-    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
-    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME "${PROJECT_NAME}")
-    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME} - Version ${VERSION}")
+    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Example Application")
+    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_EXECUTABLE_NAME "Example Application")
+    set_target_properties(example_application PROPERTIES OUTPUT_NAME "Example Application")
+    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_INFO_STRING "Example Application - Version ${PROJECT_VERSION}")
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_VERSION}")
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
-    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "Informatik 11 - Embedded Software")
-    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright © 2021 Simon Schäfer. All rights reserved.")
+    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "Simon Schäfer")
+    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright © 2022 Simon Schäfer. All rights reserved.")
     #
     set_source_files_properties(${FRAMEWORK_RES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/)
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_ICON_FILE "logo.icns")
 
-    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/frameworks/MacOSXBundleInfo.plist.in")
+    set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/frameworks/MacOSXBundleInfo.plist.in")
 elseif (UNIX)
     # Fix double click bug
     set(CMAKE_EXE_LINKER_FLAGS -no-pie)

@@ -1,2 +1,0 @@
-add_subdirectory(client_side_window_decoration)
-add_subdirectory(example_application)

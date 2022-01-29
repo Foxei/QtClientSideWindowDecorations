@@ -6,22 +6,21 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+# Make library find own .ui file
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui/)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Set platform specific sources
 if (APPLE)
     set(PLATFORM_SOURCE src/OSXHideTitleBar.mm)
-    set(FRAMEWORK_RES ${CMAKE_SOURCE_DIR}/frameworks/logo.icns)
 elseif (UNIX)
     set(PLATFORM_SOURCE)
-    set(FRAMEWORK_RES)
 elseif (WIN32)
     set(PLATFORM_SOURCE src/WinNativeWindow.cpp src/QWinWidget.cpp)
-    set(FRAMEWORK_RES)
 endif ()
 
-add_library(client_side_window_decoration SHARED ${PLATFORM_SOURCE} ${FRAMEWORK_RES}
+# Add the library
+add_library(client_side_window_decoration SHARED ${PLATFORM_SOURCE}
         resources/decoration_resources.qrc
         include/client_side_window_decoration/UndecoratedWindow.h
         src/UndecoratedWindow.cpp)
@@ -58,6 +57,7 @@ install(EXPORT ClientSideWindowDecorationConfig DESTINATION share/ClientSideWind
 # This makes the project importable from the build directory
 export(TARGETS client_side_window_decoration FILE ClientSideWindowDecorationConfig.cmake)
 
+# Link coca framework on apple to allow for native function calls
 if (APPLE)
     set(CMAKE_SHARED_LINKER_FLAGS "-framework ServiceManagement -framework Foundation -framework Cocoa")
 endif ()
