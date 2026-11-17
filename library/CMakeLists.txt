@@ -1,5 +1,5 @@
 # Define library. Only source files here!
-project(libclient_side_window_decoration VERSION 0.1 LANGUAGES CXX)
+project(libclient_side_window_decoration VERSION ${QtClientSideWindowDecoration_VERSION} LANGUAGES CXX)
 
 # Enable Qt6 cmake
 set(CMAKE_AUTOMOC ON)

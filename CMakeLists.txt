@@ -1,6 +1,18 @@
 # Qt 6 requires at least CMake 3.16
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-project(QtClientSideWindowDecoration VERSION 0.1 LANGUAGES CXX)
+
+# Version of a release build, passed in by CI from the release tag (e.g. v1.2.3).
+# Local builds fall back to the development version.
+set(RELEASE_VERSION "" CACHE STRING "Version of the release, e.g. 1.2.3 or v1.2.3")
+if (RELEASE_VERSION)
+    string(REGEX REPLACE "^v" "" _project_version "${RELEASE_VERSION}")
+    if (NOT _project_version MATCHES "^[0-9]+(\\.[0-9]+)?(\\.[0-9]+)?(\\.[0-9]+)?$")
+        message(FATAL_ERROR "RELEASE_VERSION '${RELEASE_VERSION}' is not a valid version like v1.2.3")
+    endif ()
+else ()
+    set(_project_version 0.1)
+endif ()
+project(QtClientSideWindowDecoration VERSION ${_project_version} LANGUAGES CXX)
 message(STATUS "QtClientSideWindowDecoration Version: ${PROJECT_VERSION}")
 
 # Add option to prevent example from building, only build it by default if

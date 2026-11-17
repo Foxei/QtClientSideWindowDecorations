@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Release tag (e.g. v1.2.3) the version is taken from, empty for non-release builds
+  RELEASE_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
+
 jobs:
   linux:
     runs-on: ubuntu-24.04
@@ -50,6 +54,7 @@ jobs:
         run: |
           cmake -S . -B build -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
+              -DRELEASE_VERSION="$RELEASE_VERSION" \
               -DINSTALL_EXAMPLE=ON \
               -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
               -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \

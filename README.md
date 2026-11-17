@@ -91,7 +91,7 @@ This installs the shared library, the headers and a CMake package configuration.
 Import the installed library in the `CMakeLists.txt` of your application:
 
 ```cmake
-find_package(ClientSideWindowDecoration 0.1 REQUIRED)
+find_package(ClientSideWindowDecoration REQUIRED)
 target_link_libraries(my_app PRIVATE ClientSideWindowDecoration::client_side_window_decoration)
 ```
 

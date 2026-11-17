@@ -16,6 +16,7 @@ INSTALL_NAME_TOOL="$TARGET_PREFIX-install_name_tool"
 cmake -S "$SRC" -B "$BUILD" -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="$SRC/docker/macos/toolchain.cmake" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DRELEASE_VERSION="${RELEASE_VERSION:-}" \
     -DINSTALL_EXAMPLE=ON \
     -DCMAKE_INSTALL_PREFIX="$STAGE"
 cmake --build "$BUILD" --parallel

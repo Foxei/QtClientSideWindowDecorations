@@ -3,6 +3,8 @@
 # Results end up in ./dist/<platform>.
 services:
   linux:
+    environment:
+      - RELEASE_VERSION
     build:
       context: docker/linux
       target: build
@@ -12,6 +14,8 @@ services:
       - ./dist/linux:/out
 
   windows:
+    environment:
+      - RELEASE_VERSION
     build:
       context: docker/windows
     volumes:
@@ -20,6 +24,8 @@ services:
       - ./dist/windows:/out
 
   macos:
+    environment:
+      - RELEASE_VERSION
     build:
       context: docker/macos
       additional_contexts:
