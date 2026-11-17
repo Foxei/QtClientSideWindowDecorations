@@ -6,6 +6,9 @@
 
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+
+#include <QEvent>
+#include <QLabel>
 #include "ColorDefinition.h"
 
 void MainWindow::updateDynamicStyle(const QColor &accent, const QString &background_image) {
@@ -51,9 +54,22 @@ MainWindow::MainWindow(QWidget *parent)
       ? tr("Supported (SUPPORTS_RIGHT_SIDE_CONTROLS = true)")
       : tr("Not supported, native controls are always on the left (SUPPORTS_RIGHT_SIDE_CONTROLS = false)"));
 
+  // Never shrink wrapped texts past their content
+  for (QLabel *label : {this->ui->description_lbl, this->ui->supports_right_side_controls_value_lbl}) {
+    label->installEventFilter(this);
+  }
+
   // Connect actions
   connect(this->ui->background_image_list, &QListWidget::itemSelectionChanged, this, &MainWindow::onUpdateDynamicStyle);
   connect(this->ui->notch_left_check, &QCheckBox::toggled, this, &MainWindow::onUpdateControlNotchPosition);
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
+  auto *label = qobject_cast<QLabel *>(watched);
+  if (label && label->wordWrap() && event->type() == QEvent::Resize) {
+    label->setMinimumHeight(label->heightForWidth(label->width()));
+  }
+  return UndecoratedWindow::eventFilter(watched, event);
 }
 
 void MainWindow::onUpdateDynamicStyle() {

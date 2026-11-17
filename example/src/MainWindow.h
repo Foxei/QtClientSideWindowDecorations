@@ -30,6 +30,18 @@ class MainWindow : public UndecoratedWindow {
    * @param background_image New background image name loaded from the application_resources.qrc.
    */
   void updateDynamicStyle(const QColor &accent, const QString &background_image);
+
+ protected:
+  /**
+   * Keeps word wrapped labels readable. Layouts ignore the height a wrapped
+   * text needs at its current width, so the window could shrink until the text
+   * is cut off. The label's minimum height is updated on every resize instead.
+   * @param watched Watched object.
+   * @param event Event to filter.
+   * @return Always false, the event is processed normally.
+   */
+  bool eventFilter(QObject *watched, QEvent *event) override;
+
  public:
 
   /**
