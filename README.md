@@ -76,19 +76,42 @@ Docker Compose services as above, macOS is built natively on a macOS runner. Pus
 
 ## Use as Library
 
+### Install
+
+Build and install the library system wide (default prefix `/usr/local` on Linux and macOS):
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLE=OFF
+cmake --build build
+sudo cmake --install build
+```
+
+Use `-DCMAKE_INSTALL_PREFIX=<path>` to install somewhere else. This installs the shared library, the headers and a
+CMake package configuration. The example application is only installed with `-DINSTALL_EXAMPLE=ON`.
+
+| Option            | Default                     | Description                        |
+|-------------------|-----------------------------|------------------------------------|
+| `BUILD_EXAMPLE`   | `ON` (`OFF` as subproject)  | Build the example application.     |
+| `INSTALL_EXAMPLE` | `OFF`                       | Install the example application.   |
+
 ### Add to your project
 
-Either add the repository as a subdirectory (the example is not built in that case):
+After installing, import the library in the `CMakeLists.txt` of your application:
 
 ```cmake
-add_subdirectory(QtClientSideWindowDecorations)
+find_package(ClientSideWindowDecoration 0.1 REQUIRED)
 target_link_libraries(my_app PRIVATE ClientSideWindowDecoration::client_side_window_decoration)
 ```
 
-or install it with `cmake --install` and import it:
+Qt 6 Widgets is found automatically as a dependency. If the library was installed to a custom prefix, pass
+`-DCMAKE_PREFIX_PATH=<prefix>` when configuring your application. A minimal example application is located in
+[`tests/install`](tests/install), `docker compose run --rm linux /src/docker/linux/test-install.sh` installs the
+library inside a container and builds and runs it.
+
+Alternatively add the repository as a subdirectory (the example is not built in that case):
 
 ```cmake
-find_package(ClientSideWindowDecoration REQUIRED)
+add_subdirectory(QtClientSideWindowDecorations)
 target_link_libraries(my_app PRIVATE ClientSideWindowDecoration::client_side_window_decoration)
 ```
 

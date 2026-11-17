@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         qt6-base-dev \
         qt6-svg-dev \
         libgl-dev \
+        qt6-qpa-plugins \
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["/src/docker/linux/build.sh"]
@@ -22,7 +23,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gdb \
         git \
         ca-certificates \
-        qt6-qpa-plugins \
         qt6-wayland \
         libxkbcommon-x11-0 \
         libxcb-cursor0 \

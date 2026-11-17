@@ -8,6 +8,7 @@ OUT=/out
 
 cmake -S "$SRC" -B "$BUILD" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
+    -DINSTALL_EXAMPLE=ON \
     -DCMAKE_INSTALL_PREFIX="$OUT"
 cmake --build "$BUILD" --parallel
 rm -rf "${OUT:?}"/*

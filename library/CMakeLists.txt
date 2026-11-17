@@ -26,6 +26,13 @@ add_library(client_side_window_decoration SHARED ${PLATFORM_SOURCE}
         src/UndecoratedWindow.cpp)
 add_library(ClientSideWindowDecoration::client_side_window_decoration ALIAS client_side_window_decoration)
 
+# Versioned shared library (libclient_side_window_decoration.so.0) for system wide installs on Linux
+if (UNIX AND NOT APPLE)
+    set_target_properties(client_side_window_decoration PROPERTIES
+            VERSION ${PROJECT_VERSION}
+            SOVERSION ${PROJECT_VERSION_MAJOR})
+endif ()
+
 # Generate the export macro required for shared libraries on Windows
 include(GenerateExportHeader)
 generate_export_header(client_side_window_decoration
@@ -51,7 +58,8 @@ install(TARGETS client_side_window_decoration EXPORT ClientSideWindowDecorationT
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
-install(DIRECTORY include/ ${CMAKE_CURRENT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY include/ ${CMAKE_CURRENT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.h")
 
 # This makes the project importable from the install directory with
 # find_package(ClientSideWindowDecoration)

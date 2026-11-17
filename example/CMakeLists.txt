@@ -16,7 +16,7 @@ add_executable(example_application
         src/MainWindow.cpp
         ${FRAMEWORK_RES})
 
-target_link_libraries(example_application PRIVATE Qt6::Widgets Qt6::Svg client_side_window_decoration)
+target_link_libraries(example_application PRIVATE Qt6::Widgets Qt6::Svg ClientSideWindowDecoration::client_side_window_decoration)
 
 # Setting platform specific post build options
 if (APPLE)
@@ -50,6 +50,8 @@ elseif (UNIX)
 endif ()
 
 # Install the application next to the library
-install(TARGETS example_application
-        BUNDLE DESTINATION .
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if (INSTALL_EXAMPLE)
+    install(TARGETS example_application
+            BUNDLE DESTINATION .
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif ()

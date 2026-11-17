@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: docker compose run --rm linux
+      - name: Test install and find_package
+        run: docker compose run --rm linux /src/docker/linux/test-install.sh
       - name: Package
         run: tar -czf ExampleApplication-linux-x64.tar.gz -C dist/linux .
       - uses: actions/upload-artifact@v4
@@ -48,6 +50,7 @@ jobs:
         run: |
           cmake -S . -B build -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
+              -DINSTALL_EXAMPLE=ON \
               -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
               -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
               -DCMAKE_INSTALL_PREFIX="$PWD/stage"

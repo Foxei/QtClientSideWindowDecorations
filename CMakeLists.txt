@@ -11,6 +11,8 @@ else ()
     set(_build_example_default NO)
 endif ()
 option(BUILD_EXAMPLE "Build an example application." ${_build_example_default})
+# Installing only installs the library unless the example is requested
+option(INSTALL_EXAMPLE "Install the example application." NO)
 
 # Must use GNUInstallDirs to install libraries into correct
 # locations on all platforms.
