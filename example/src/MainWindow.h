@@ -45,8 +45,8 @@ class MainWindow : public UndecoratedWindow {
   void onUpdateDynamicStyle();
 
   /**
-   * Update controls position based on the users input. Does not correctly work on macOS as here the system controls
-   * are used.
+   * Update controls position based on the users input. Only available if
+   * UndecoratedWindow::SUPPORTS_RIGHT_SIDE_CONTROLS is set, on macOS the system controls are always on the left.
    */
   void onUpdateControlNotchPosition();
 

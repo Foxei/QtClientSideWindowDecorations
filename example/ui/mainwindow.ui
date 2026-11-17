@@ -140,7 +140,7 @@
           <item row="0" column="0" colspan="2">
            <widget class="QLabel" name="description_lbl">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Example Application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This is an example application for modern looking graphical user interfaces in Qt5 and Qt6. To get full control over the behaviour of the whole application, some native calls were used to hide the title bar. It is now possible to create your own title bar with integrated logos, menus or buttons.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Example Application&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This is an example application for modern looking graphical user interfaces in Qt6. To get full control over the behaviour of the whole application, some native calls were used to hide the title bar. It is now possible to create your own title bar with integrated logos, menus or buttons.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -170,6 +170,20 @@
              <string>Show Control on Left Side</string>
             </property>
             <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="supports_right_side_controls_lbl">
+            <property name="text">
+             <string>Controls Right:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="supports_right_side_controls_value_lbl">
+            <property name="wordWrap">
              <bool>true</bool>
             </property>
            </widget>

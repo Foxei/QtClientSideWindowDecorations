@@ -44,4 +44,30 @@ void OSXHideTitleBar::FullScreen(unsigned long long windowId) {
   // Remove black bar by deleting the empty toolbar
   [nativeWindow setToolbar:nullptr];
 }
+
+QRect OSXHideTitleBar::ControlsGeometry(unsigned long long windowId) {
+  auto *nativeView = reinterpret_cast<NSView *>(windowId);
+  NSWindow *nativeWindow = [nativeView window];
+  // Make sure the buttons are at their final position, e.g. after adding the toolbar
+  [nativeWindow.contentView.superview layoutSubtreeIfNeeded];
+
+  NSRect controls = NSZeroRect;
+  for (NSWindowButton type : {NSWindowCloseButton, NSWindowMiniaturizeButton, NSWindowZoomButton}) {
+    NSButton *button = [nativeWindow standardWindowButton:type];
+    if (!button || button.hidden) {
+      continue;
+    }
+    NSRect rect = [button convertRect:button.bounds toView:nativeView];
+    controls = NSIsEmptyRect(controls) ? rect : NSUnionRect(controls, rect);
+  }
+  if (NSIsEmptyRect(controls)) {
+    return {};
+  }
+
+  // Qt uses a top left origin, flip if the view uses the Cocoa bottom left origin
+  if (!nativeView.isFlipped) {
+    controls.origin.y = nativeView.bounds.size.height - NSMaxY(controls);
+  }
+  return QRectF(controls.origin.x, controls.origin.y, controls.size.width, controls.size.height).toAlignedRect();
+}
 }

@@ -19,8 +19,11 @@
 QString getStyleSheet() {
   // Parse stylesheet from resources file
   QFile file(":resources/application_style.qss");
-  file.open(QFile::ReadOnly);
-  QString styleSheet = QLatin1String(file.readAll());
+  if (!file.open(QFile::ReadOnly)) {
+    qWarning("Could not load application_style.qss");
+    return {};
+  }
+  QString styleSheet = QString::fromUtf8(file.readAll());
   return styleSheet;
 }
 
@@ -77,7 +80,7 @@ int main(int argc, char *argv[]) {
   QApplication application(argc, argv);
   QCommandLineParser commandLineParser;
   commandLineParser
-      .setApplicationDescription("Example of client side decorations for modern user interfaces in Qt5.15");
+      .setApplicationDescription("Example of client side decorations for modern user interfaces in Qt6");
   commandLineParser.addHelpOption();
   commandLineParser.addVersionOption();
   commandLineParser.process(application);

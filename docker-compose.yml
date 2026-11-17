@@ -1,0 +1,38 @@
+# Builds the project for all platforms inside containers:
+#   docker compose up --build
+# Results end up in ./dist/<platform>.
+services:
+  linux:
+    build:
+      context: docker/linux
+      target: build
+    volumes:
+      - .:/src:ro
+      - build-linux:/build
+      - ./dist/linux:/out
+
+  windows:
+    build:
+      context: docker/windows
+    volumes:
+      - .:/src:ro
+      - build-windows:/build
+      - ./dist/windows:/out
+
+  macos:
+    build:
+      context: docker/macos
+      additional_contexts:
+        # Unpacked macOS SDK, by default the one from the Xcode command line tools
+        macos-sdk: ${MACOS_SDK_PATH:-/Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk}
+      args:
+        MACOS_SDK_VERSION: ${MACOS_SDK_VERSION:-15.4}
+    volumes:
+      - .:/src:ro
+      - build-macos:/build
+      - ./dist/macos:/out
+
+volumes:
+  build-linux:
+  build-windows:
+  build-macos:

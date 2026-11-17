@@ -1,11 +1,12 @@
 #ifndef WINNATIVEWINDOW_H
 #define WINNATIVEWINDOW_H
-namespace platform_specific {
 
-#include "Windows.h"
-#include "Windowsx.h"
+#include <windows.h>
+#include <windowsx.h>
 
 #include <QWidget>
+
+namespace platform_specific {
 
 class WinNativeWindow {
 
@@ -14,13 +15,7 @@ class WinNativeWindow {
   WinNativeWindow(const int x, const int y, const int width, const int height);
   ~WinNativeWindow();
 
-  static LRESULT CALLBACK
-  WndProc(HWND
-  hWnd,
-  UINT message, WPARAM
-  wParam,
-  LPARAM lParam
-  );
+  static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
   //These six functions exist to restrict native window resizing to whatever you want your app minimum/maximum size to be
   void setMinimumSize(const int width, const int height);
