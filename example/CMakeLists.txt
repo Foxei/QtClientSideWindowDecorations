@@ -1,4 +1,4 @@
-# Enable Qt5 cmake
+# Enable Qt6 cmake
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -16,18 +16,10 @@ add_executable(example_application
         src/MainWindow.cpp
         ${FRAMEWORK_RES})
 
-# Set platform specific linker options
-if (APPLE)
-    target_link_libraries(example_application Qt5::Widgets Qt5::Svg client_side_window_decoration)
-elseif (UNIX)
-    target_link_libraries(example_application PRIVATE Qt5::Widgets Qt5::Svg client_side_window_decoration)
-elseif (WIN32)
-    target_link_libraries(example_application PRIVATE Qt5::Widgets Qt5::Svg client_side_window_decoration)
-endif ()
+target_link_libraries(example_application PRIVATE Qt6::Widgets Qt6::Svg ClientSideWindowDecoration::client_side_window_decoration)
 
 # Setting platform specific post build options
 if (APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "-framework ServiceManagement -framework Foundation -framework Cocoa")
     # Setting application meta information
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE TRUE)
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Example Application")
@@ -44,15 +36,22 @@ if (APPLE)
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_ICON_FILE "logo.icns")
 
     set_target_properties(example_application PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/frameworks/MacOSXBundleInfo.plist.in")
+elseif (WIN32)
+    # Do not open a console window next to the application
+    set_target_properties(example_application PROPERTIES WIN32_EXECUTABLE TRUE)
 elseif (UNIX)
-    # Fix double click bug
-    set(CMAKE_EXE_LINKER_FLAGS -no-pie)
-
     # Setting application meta information
-    set(PROJECT_PATH "${CMAKE_BINARY_DIR}/example_application")
-    set(PROJECT_ICON "${CMAKE_BINARY_DIR}/logo.png")
+    set(PROJECT_PATH "${CMAKE_CURRENT_BINARY_DIR}/example_application")
+    set(PROJECT_ICON "${CMAKE_CURRENT_BINARY_DIR}/logo.png")
 
     # Copy launcher files
-    file(COPY ${CMAKE_SOURCE_DIR}/frameworks/logo.png DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
-    configure_file(${CMAKE_SOURCE_DIR}/frameworks/linux-launcher.desktop.in $linux-launcher.desktop)
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/frameworks/logo.png DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/frameworks/linux-launcher.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/linux-launcher.desktop)
+endif ()
+
+# Install the application next to the library
+if (INSTALL_EXAMPLE)
+    install(TARGETS example_application
+            BUNDLE DESTINATION .
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif ()

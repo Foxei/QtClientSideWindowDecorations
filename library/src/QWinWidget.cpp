@@ -1,4 +1,4 @@
-#include "platform/QWinWidget.h"
+#include "QWinWidget.h"
 
 #include <QApplication>
 #include <QEvent>
@@ -6,7 +6,7 @@
 #include <QWindow>
 #include <QDebug>
 
-#include "platform/UndecoratedWindow.h"
+#include "client_side_window_decoration/UndecoratedWindow.h"
 #include "ui_undecoratedwindow.h"
 
 namespace platform_specific {
@@ -220,7 +220,7 @@ void QWinWidget::onCloseButtonClicked() {
   }
 }
 
-bool QWinWidget::nativeEvent(const QByteArray &, void *message, long *result) {
+bool QWinWidget::nativeEvent(const QByteArray &, void *message, qintptr *result) {
   MSG *msg = (MSG *) message;
 
   if (msg->message == WM_SETFOCUS) {

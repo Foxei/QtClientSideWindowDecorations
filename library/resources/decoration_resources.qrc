@@ -4,6 +4,5 @@
         <file>icons/x.svg</file>
         <file>icons/minus.svg</file>
         <file>icons/maximize.svg</file>
-        <file>icons/minimize.svg</file>
     </qresource>
 </RCC>

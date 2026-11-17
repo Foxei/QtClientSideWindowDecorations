@@ -6,6 +6,9 @@
 
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+
+#include <QEvent>
+#include <QLabel>
 #include "ColorDefinition.h"
 
 void MainWindow::updateDynamicStyle(const QColor &accent, const QString &background_image) {
@@ -42,10 +45,31 @@ MainWindow::MainWindow(QWidget *parent)
   this->ui->setupUi(this);
   this->centralWidget()->layout()->addWidget(this->ui->centralwidget);
   this->ui->notch_left_check->setChecked(this->titleBarDirection() == Qt::RightToLeft);
+  // Some platforms (macOS) only support the controls on the left side
+  this->ui->notch_left_check->setEnabled(UndecoratedWindow::SUPPORTS_RIGHT_SIDE_CONTROLS);
+
+  // Show the capabilities of the decoration library on this platform
+  this->ui->supports_right_side_controls_value_lbl->setText(
+      UndecoratedWindow::SUPPORTS_RIGHT_SIDE_CONTROLS
+      ? tr("Supported (SUPPORTS_RIGHT_SIDE_CONTROLS = true)")
+      : tr("Not supported, native controls are always on the left (SUPPORTS_RIGHT_SIDE_CONTROLS = false)"));
+
+  // Never shrink wrapped texts past their content
+  for (QLabel *label : {this->ui->description_lbl, this->ui->supports_right_side_controls_value_lbl}) {
+    label->installEventFilter(this);
+  }
 
   // Connect actions
   connect(this->ui->background_image_list, &QListWidget::itemSelectionChanged, this, &MainWindow::onUpdateDynamicStyle);
-  connect(this->ui->notch_left_check, &QCheckBox::stateChanged, this, &MainWindow::onUpdateControlNotchPosition);
+  connect(this->ui->notch_left_check, &QCheckBox::toggled, this, &MainWindow::onUpdateControlNotchPosition);
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event) {
+  auto *label = qobject_cast<QLabel *>(watched);
+  if (label && label->wordWrap() && event->type() == QEvent::Resize) {
+    label->setMinimumHeight(label->heightForWidth(label->width()));
+  }
+  return UndecoratedWindow::eventFilter(watched, event);
 }
 
 void MainWindow::onUpdateDynamicStyle() {

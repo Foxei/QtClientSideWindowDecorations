@@ -30,6 +30,18 @@ class MainWindow : public UndecoratedWindow {
    * @param background_image New background image name loaded from the application_resources.qrc.
    */
   void updateDynamicStyle(const QColor &accent, const QString &background_image);
+
+ protected:
+  /**
+   * Keeps word wrapped labels readable. Layouts ignore the height a wrapped
+   * text needs at its current width, so the window could shrink until the text
+   * is cut off. The label's minimum height is updated on every resize instead.
+   * @param watched Watched object.
+   * @param event Event to filter.
+   * @return Always false, the event is processed normally.
+   */
+  bool eventFilter(QObject *watched, QEvent *event) override;
+
  public:
 
   /**
@@ -45,8 +57,8 @@ class MainWindow : public UndecoratedWindow {
   void onUpdateDynamicStyle();
 
   /**
-   * Update controls position based on the users input. Does not correctly work on macOS as here the system controls
-   * are used.
+   * Update controls position based on the users input. Only available if
+   * UndecoratedWindow::SUPPORTS_RIGHT_SIDE_CONTROLS is set, on macOS the system controls are always on the left.
    */
   void onUpdateControlNotchPosition();
 

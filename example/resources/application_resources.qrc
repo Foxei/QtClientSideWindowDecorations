@@ -1,7 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource prefix="/resources">
         <file>application_style.qss</file>
-        <file>logo.png</file>
+        <file alias="logo.png">../frameworks/logo.png</file>
         <file>backgrounds/0.svg</file>
         <file>backgrounds/1.svg</file>
         <file>backgrounds/2.svg</file>

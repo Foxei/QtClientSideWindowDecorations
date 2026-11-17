@@ -1,6 +1,8 @@
 #ifndef OSXHIDETITLEBAR_H
 #define OSXHIDETITLEBAR_H
 
+#include <QRect>
+
 namespace platform_specific {
 
 /**
@@ -21,6 +23,14 @@ class OSXHideTitleBar {
    * @param windowId Id of the current QWindow running.
    */
   static void FullScreen(unsigned long long windowId);
+
+  /**
+   * Returns the area covered by the native window controls (close, minimize
+   * and zoom button) in the coordinates of the Qt window.
+   * @param windowId Id of the current QWindow running.
+   * @return Geometry of the controls or a null rect if they are not visible.
+   */
+  static QRect ControlsGeometry(unsigned long long windowId);
 };
 }
 #endif //OSXHIDETITLEBAR_H

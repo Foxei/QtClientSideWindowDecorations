@@ -4,12 +4,12 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-#include "platform/WinNativeWindow.h"
-#include "platform/NativeDefinitions.h"
-
-namespace platform_specific {
+#include "WinNativeWindow.h"
+#include "NativeDefinitions.h"
 
 class UndecoratedWindow;
+
+namespace platform_specific {
 
 class QWinWidget : public QWidget {
  Q_OBJECT
@@ -54,7 +54,7 @@ class QWinWidget : public QWidget {
   bool focusNextPrevChild(bool next) override;
   void focusInEvent(QFocusEvent *e) override;
 
-  bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+  bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 };
 }
 #endif // QWINWIDGET_H

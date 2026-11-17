@@ -2,6 +2,9 @@
 #include "ui_undecoratedwindow.h"
 
 #include <QApplication>
+#include <QFile>
+#include <QMouseEvent>
+#include <QHoverEvent>
 #include <QWindow>
 #include <QSettings>
 #include <QWindowStateChangeEvent>
@@ -12,6 +15,10 @@
 
 #if defined(Q_OS_DARWIN)
 #include "OSXHideTitleBar.h"
+#include <QMargins>
+
+// Space between the native macOS window buttons and the edge of their background
+static const QMargins MACOS_CONTROLS_PADDING(8, 6, 8, 6);
 #elif defined(Q_OS_WINDOWS)
 #include "QWinWidget.h"
 #elif defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
@@ -21,8 +28,11 @@
 QString getStyleSheet() {
   // Parse stylesheet from resources file
   QFile file(":resources/decoration_style.qss");
-  file.open(QFile::ReadOnly);
-  QString styleSheet = QLatin1String(file.readAll());
+  if (!file.open(QFile::ReadOnly)) {
+    qWarning("Could not load decoration_style.qss");
+    return {};
+  }
+  QString styleSheet = QString::fromUtf8(file.readAll());
   return styleSheet;
 }
 
@@ -66,7 +76,7 @@ void UndecoratedWindow::setOsSpecificObjectName() {
   setObjectName("macos");
 #elif defined(Q_OS_WINDOWS)
   this->setObjectName("windows");
-#elif defined(Q_OS_Q_OS_UNIX)
+#elif defined(Q_OS_UNIX)
     this->setObjectName("linux");
 #endif
 }
@@ -86,6 +96,12 @@ UndecoratedWindow::UndecoratedWindow(QWidget *parent)
   this->setStyleSheet(getStyleSheet());
 
 #if defined(Q_OS_DARWIN)
+  // The content is drawn below the transparent title bar, do not let Qt push
+  // it down by the safe area of the native title bar
+  for (QWidget *widget : {static_cast<QWidget *>(this), this->ui->centralwidget,
+                          this->ui->titleBarContainer, this->ui->controlsContainerRight}) {
+    widget->setAttribute(Qt::WA_ContentsMarginsRespectsSafeArea, false);
+  }
   // We use system controls and frame on macOS, hide custom buttons from the
   // decoration and keep the rest
   this->ui->closeBtn->hide();
@@ -117,7 +133,7 @@ UndecoratedWindow::UndecoratedWindow(QWidget *parent)
 
 #if defined(Q_OS_WINDOWS)
   // Embed this QMainWindow into a native Windows window
-  win_widget = new QWinWidget(this);
+  win_widget = new platform_specific::QWinWidget(this);
   win_widget->show();
 #endif
 }
@@ -135,6 +151,7 @@ void UndecoratedWindow::showEvent(QShowEvent *event) {
 #if defined(Q_OS_DARWIN)
   // Hide system title bar using native code
   platform_specific::OSXHideTitleBar::Windowed(this->winId());
+  this->updateMacOSControlsGeometry();
 #elif defined(Q_OS_WINDOWS)
   // Update values for the windows native window
   win_widget->updateMinimumAndMaximumSize();
@@ -156,6 +173,7 @@ bool UndecoratedWindow::event(QEvent *event) {
       // Make native windowed call hide title bar again
        platform_specific::OSXHideTitleBar::Windowed(this->winId());
       // Show controls background
+      this->updateMacOSControlsGeometry();
       this->ui->controlsContainerRight->show();
     }
   }
@@ -164,7 +182,7 @@ bool UndecoratedWindow::event(QEvent *event) {
   // Handle window resizing on linux
   if (event->type() == QEvent::HoverMove) {
     auto *hover_event = dynamic_cast<QHoverEvent *>(event);
-    QPoint position = hover_event->pos();
+    QPoint position = hover_event->position().toPoint();
     if (position.x() > this->width() - RESIZE_HANDLES_WIDTH) {
       this->setCursor(Qt::SizeHorCursor);
     } else if (position.x() < RESIZE_HANDLES_WIDTH) {
@@ -181,7 +199,7 @@ bool UndecoratedWindow::event(QEvent *event) {
     this->setCursor(Qt::ArrowCursor);
   } else if (event->type() == QEvent::MouseButtonPress) {
     auto *mouse_event = dynamic_cast<QMouseEvent *>(event);
-    QPoint position = mouse_event->pos();
+    QPoint position = mouse_event->position().toPoint();
     if (position.x() > this->width() - RESIZE_HANDLES_WIDTH) {
       this->windowHandle()->startSystemResize(Qt::Edge::RightEdge);
       this->setCursor(Qt::SizeHorCursor);
@@ -205,7 +223,27 @@ bool UndecoratedWindow::event(QEvent *event) {
   return false;
 }
 
+#if defined(Q_OS_DARWIN)
+void UndecoratedWindow::updateMacOSControlsGeometry() {
+  const QRect controls = platform_specific::OSXHideTitleBar::ControlsGeometry(this->winId());
+  if (controls.isNull()) {
+    return;
+  }
+  // Place the background exactly behind the native buttons, the title bar
+  // starts at the top left corner of the window
+  const QRect background = controls.marginsAdded(MACOS_CONTROLS_PADDING);
+  this->ui->controlsContainerRight->setFixedSize(background.size());
+  this->ui->titleBarContainer->layout()->setContentsMargins(
+      background.x(), background.y(), background.x(), background.y());
+}
+#endif
+
 void UndecoratedWindow::setTitleBarDirection(Qt::LayoutDirection direction) {
+  // The native controls on macOS can not be moved to the right side
+  if (!SUPPORTS_RIGHT_SIDE_CONTROLS && direction == Qt::LeftToRight) {
+    qWarning("[UndecoratedWindow] Window controls can not be placed on the right side on this platform.");
+    return;
+  }
   // Flip direction of title bar and button order
   this->ui->titleBarContainer->setLayoutDirection(direction);
   this->ui->controlsContainerRight->setLayoutDirection(direction);
